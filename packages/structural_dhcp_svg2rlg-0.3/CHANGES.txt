@@ -1,0 +1,17 @@
+structural_dhcp_svg2rlg is adapted from the svg2rlg package version 0.3.
+
+
+The following files have been modified:
+svg2rlg.py
+README.rst
+setup.py
+
+
+The following folders/files have been removed:
+test-suite/
+svg2rlg_render_test.py
+test_svg2rlg.py
+
+
+The following files have been added:
+CHANGES.txt

@@ -1,0 +1,32 @@
+structural_dhcp_mriqc is adapted from the mriqc package version 0.8.4 a2.
+
+
+The following files have been modified:
+CHANGES.txt
+README.rst
+LICENSE.txt
+MANIFEST.in
+requirements.txt
+setup.py
+structural_dhcp_mriqc/__init__.py
+structural_dhcp_mriqc/interfaces/__init__.py
+structural_dhcp_mriqc/interfaces/viz_utils.py
+structural_dhcp_mriqc/interfaces/qc.py
+structural_dhcp_mriqc/reports/generators.py
+structural_dhcp_mriqc/data/utils.py
+structural_dhcp_mriqc/data/reports/cover_group.rst
+structural_dhcp_mriqc/data/reports/cover_individual.rst
+structural_dhcp_mriqc/workflows/core.py
+structural_dhcp_mriqc/workflows/anatomical.py
+structural_dhcp_mriqc/qc/tests/test_anatomical.py
+structural_dhcp_mriqc/utils/mriqc_run.py
+structural_dhcp_mriqc/utils/mriqc_plot.py
+structural_dhcp_mriqc/utils/fs2gif.py
+structural_dhcp_mriqc/utils/agave_appgen.py
+structural_dhcp_mriqc/utils/misc.py
+
+
+The following folders have been removed:
+agave
+build
+docs

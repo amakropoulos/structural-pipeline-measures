@@ -1,0 +1,44 @@
+structural_dhcp_rst2pdf is adapted from the rst2pdf package version 0.93 (aquavitae branch).
+
+
+The following files have been modified:
+LICENSE.txt
+CHANGES.txt
+requirements.txt
+setup.py
+
+rst2pdf/image.py
+rst2pdf/svgimage.py
+rst2pdf/aafigure_directive.py
+rst2pdf/pdfbuilder.py
+rst2pdf/log.py
+rst2pdf/flowables.py
+rst2pdf/extensions/plantuml.py
+rst2pdf/extensions/preprocess_r2p.py
+rst2pdf/extensions/__init__.py
+rst2pdf/extensions/vectorpdf_r2p.py
+rst2pdf/extensions/sample.py
+rst2pdf/extensions/fancytitles.py
+rst2pdf/extensions/dotted_toc.py
+rst2pdf/extensions/inkscape_r2p.py
+rst2pdf/createpdf.py
+rst2pdf/styles.py
+rst2pdf/genelements.py
+rst2pdf/math_flowable.py
+rst2pdf/nodehandlers.py
+rst2pdf/findfonts.py
+rst2pdf/config.py
+rst2pdf/math_directive.py
+rst2pdf/__init__.py
+rst2pdf/utils.py
+rst2pdf/writer.py
+rst2pdf/basenodehandler.py
+rst2pdf/genpdftext.py
+rst2pdf/pygments2style.py
+rst2pdf/languages.py
+rst2pdf/pygments2json.py
+
+
+
+The following folders have been removed:
+rst2pdf/tests/
