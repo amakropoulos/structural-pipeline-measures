@@ -8,7 +8,8 @@ This script computes the different measurements for the dHCP structural pipeline
  and if specified creates pdf reports for the subjects (option --QC).
 
 Arguments:
-  derivatives_dir               The derivatives directory created from the structural pipelineThe script additionally creates a pdf report for the subjects specified in the <csv> file.
+  derivatives_dir               The derivatives directory created from the structural pipeline.
+                                The script additionally creates a pdf report for the subjects specified in the <csv> file.
   dataset_csv                   The dataset_csv file is a comma-delimited file with a line for each subject session:
                                    <subjectID>, <sessionID>, <age>
                                 e.g.
@@ -18,7 +19,7 @@ Arguments:
                                    subject-N, session-1, 36
 
 Options:
-  --QC                          The script will additionally create a pdf report for each subject, and a group report.    
+  --reporting                   The script will additionally create a pdf report for each subject, and a group report.    
   -t / -threads  <number>       Number of threads (CPU cores) used (default: 1)
   -d / -data-dir  <directory>   The directory used to run the script and output the files. 
   -h / -help / --help           Print usage.
@@ -41,7 +42,7 @@ scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/scripts
 shift; shift;
 while [ $# -gt 0 ]; do
   case "$1" in
-    --QC)  shift; QC=1; ;;
+    --reporting)  shift; QC=1; ;;
     -d|-data-dir)  shift; datadir=$1; ;;
     -t|-threads)  shift; threads=$1; ;;
     -h|-help|--help) usage; ;;
@@ -175,5 +176,5 @@ done < $dataset_csv
 
 cp $reportsdir/anatomical_group.pdf $derivatives_dir/anat_group.pdf
 cp $reportsdir/anatomical_group_stats.pdf $derivatives_dir/anat_group_qc.pdf
-
+cp $reportsdir/pipeline_all_measures.csv $derivatives_dir/anat_group_measurements.csv
 echo "completed QC reports"
