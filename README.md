@@ -22,10 +22,13 @@ The reporting (optional) can be installed as follows:
 
 
 ## Run
+In order to run this pipeline, the dHCP structural pipeline commands/tools need to be included in the shell PATH by running:
+* . [dHCP_structural_pipeline_path]/parameters/path.sh
+<br>
 
 The pipeline can be run with the following command:
 
-./pipeline.sh [derivatives_dir] [dataset_csv]  \( --reporting \) \( -t [num_threads] \)
+* ./pipeline.sh [derivatives_dir] [dataset_csv]  \( --reporting \) \( -t [num_threads] \)
 
 where:
 
