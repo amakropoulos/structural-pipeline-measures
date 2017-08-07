@@ -162,4 +162,16 @@ done
 echo "creating QC reports..."
 structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhcp-measurements.json --qc-measures $reportsdir/qc-measurements.json --nthreads $threads
 
+
+echo "copying reports..."
+while read line; do
+  s=`echo $line | cut -d',' -f1 | sed -e 's:sub-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
+  e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
+  echo "$s $e"
+  cp $reportsdir/anatomical_${s}.pdf $derivatives_dir/sub-$s/ses-$e/anat/sub-${s}_ses-${e}_qc.pdf
+done < $dataset_csv
+
+cp $reportsdir/anatomical_group.pdf $derivatives_dir/anat_group.pdf
+cp $reportsdir/anatomical_group_stats.pdf $derivatives_dir/anat_group_qc.pdf
+
 echo "completed QC reports"
