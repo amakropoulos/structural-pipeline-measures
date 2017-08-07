@@ -1,5 +1,4 @@
-# Measurements/Reporting
-## for the dHCP Structural Pipeline
+# Measurements/Reporting for the dHCP Structural Pipeline
 
 This is an additional package that computes measurements and creates reports for the dHCP Structural Pipeline.
 
@@ -33,7 +32,7 @@ where:
 | Argument        | Type      | Description     
 | ------------- |:-------------:| :-------------:|
 | derivatives_dir| string | The derivatives directory created from the structural pipeline
-| dataset_csv| string | This is a comma-delimited file (CSV) with the sessions to be included in the measurements/reporting. <br>It includes one line for each subject session: [subjectID], [sessionID], [age] e.g. <br>subject-1, session-1, 32<br>subject-1, session-2, 44<br>...<br>subject-N, session-1, 36<br>
+| dataset_csv| CSV file | This is a comma-delimited file (CSV) with the sessions to be included in the measurements/reporting. <br>It includes one line for each subject session: [subjectID], [sessionID], [age] e.g. <br>subject-1, session-1, 32<br>subject-1, session-2, 44<br>...<br>subject-N, session-1, 36<br>
 | num_threads| integer |Number of threads (CPU cores) used (default: 1) (Optional)
 If specified (--reporting), the pipeline will also generate PDF reports for the subjects.
 
