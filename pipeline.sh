@@ -127,6 +127,8 @@ echo "completed volume/surface measurements"
 
 if  [ $QC -eq 0 ];then exit;fi
 
+echo "----------------------------
+"
 
 echo "computing QC measurements for subjects..."
 
