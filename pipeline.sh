@@ -74,7 +74,7 @@ while read line; do
   echo "$s $e"
   $scriptdir/compute-measurements.sh $s $e $derivatives_dir/sub-$s/ses-$e/anat -d $workdir > logs/$s-$e-measures.log 2> logs/$s-$e-measures.err
 done < $dataset_csv
-
+echo ""
 
 
 
@@ -140,6 +140,7 @@ while read line; do
   $scriptdir/compute-QC-measurements.sh $s $e $a $derivatives_dir/sub-$s/ses-$e/anat -d $workdir >> logs/$s-$e-measures.log 2>> logs/$s-$e-measures.err
   subjs="$subjs $subj"
 done < $dataset_csv
+echo ""
 
 # gather measures
 echo "gathering QC measurements of subjects..."
@@ -160,14 +161,13 @@ done
 
 # create reports
 echo "creating QC reports..."
-structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhcp-measurements.json --qc-measures $reportsdir/qc-measurements.json --nthreads $threads
+structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhcp-measurements.json --qc-measures $reportsdir/qc-measurements.json --nthreads $threads >> logs/$s-$e-measures.log 2>> logs/$s-$e-measures.err
 
 
 echo "copying reports..."
 while read line; do
   s=`echo $line | cut -d',' -f1 | sed -e 's:sub-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
-  echo "$s $e"
   cp $reportsdir/anatomical_${s}.pdf $derivatives_dir/sub-$s/ses-$e/anat/sub-${s}_ses-${e}_qc.pdf
 done < $dataset_csv
 
