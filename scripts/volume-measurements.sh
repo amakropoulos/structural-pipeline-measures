@@ -14,7 +14,7 @@ if [ "$super" != "" ];then
   for s in ${supstructures};do
     for col in {2..5};do
       substructures=`cat $super | grep "^$s "|cut -d' ' -f $col`
-      multipadding $anatDir/${subj}_drawem_all_labels.nii.gz $anatDir/${subj}_drawem_all_labels.nii.gz $outpre-temp.nii.gz `echo $substructures | wc -w` $substructures 0 -invert
+      mirtk padding $anatDir/${subj}_drawem_all_labels.nii.gz $anatDir/${subj}_drawem_all_labels.nii.gz $outpre-temp.nii.gz `echo $substructures | wc -w` $substructures 0 -invert
       vol[$col]=`fslstats $outpre-temp.nii.gz -V|cut -d' ' -f2`
     done
     vol[0]=`echo "scale=3; ${vol[2]}+${vol[4]}" | /usr/bin/bc`
