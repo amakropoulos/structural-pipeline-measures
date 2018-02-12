@@ -62,7 +62,8 @@ $BASH_SOURCE $command
 
 reportsdir=$datadir/reports
 workdir=$reportsdir/workdir
-mkdir -p $workdir logs/
+logdir=$datadir/logs
+mkdir -p $logdir
 
 
 ################ MEASURES PIPELINE ################
@@ -73,7 +74,7 @@ while read line; do
   e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   a=`echo $line | cut -d',' -f3 | sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   echo "$s $e"
-  $scriptdir/compute-measurements.sh $s $e $derivatives_dir/sub-$s/ses-$e/anat -d $workdir > logs/$s-$e-measures.log 2> logs/$s-$e-measures.err
+  $scriptdir/compute-measurements.sh $s $e $derivatives_dir/sub-$s/ses-$e/anat -d $workdir > $logdir/$s-$e-measures.log 2> $logdir/$s-$e-measures.err
 done < $dataset_csv
 echo ""
 
@@ -91,7 +92,7 @@ typeset -A name
 # header
 lbldir=$scriptdir/../label_names
 header="subject ID, session ID, age at scan"
-for c in ${stats};do
+for c in ${stats}; do
   if [[ $c == *"tissue-regions"* ]];then labels=$lbldir/tissue_labels.csv 
   elif [[ $c == *"all-regions"* ]];then labels=$lbldir/all_labels.csv
   elif [[ $c == *"regions"* ]];then labels=$lbldir/cortical_labels.csv 
@@ -140,7 +141,7 @@ while read line; do
   a=`echo $line | cut -d',' -f3 | sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   subj="sub-${s}_ses-$e"
   echo "$s $e"
-  $scriptdir/compute-QC-measurements.sh $s $e $a $derivatives_dir/sub-$s/ses-$e/anat -d $workdir >> logs/$s-$e-measures.log 2>> logs/$s-$e-measures.err
+  $scriptdir/compute-QC-measurements.sh $s $e $a $derivatives_dir/sub-$s/ses-$e/anat -d $workdir >> $logdir/$s-$e-measures.log 2>> $logdir/$s-$e-measures.err
   subjs="$subjs $subj"
 done < $dataset_csv
 echo ""
@@ -164,7 +165,7 @@ done
 
 # create reports
 echo "creating QC reports..."
-structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhcp-measurements.json --qc-measures $reportsdir/qc-measurements.json --nthreads $threads >> logs/$s-$e-measures.log 2>> logs/$s-$e-measures.err
+structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhcp-measurements.json --qc-measures $reportsdir/qc-measurements.json --nthreads $threads >> $logdir/$s-$e-measures.log 2>> $logdir/$s-$e-measures.err
 
 
 echo "copying reports..."
