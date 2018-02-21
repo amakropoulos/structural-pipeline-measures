@@ -1,4 +1,14 @@
- #!/bin/bash
+#!/bin/bash
+
+# if FSLDIR is not defined, assume we need to read the FSL startup
+if [ -z ${FSLDIR+x} ]; then
+  if [ ! -f /etc/fsl/fsl.sh ]; then
+    echo FSLDIR is not set and there is no system-wide FSL startup
+    exit 1
+  fi
+
+  . /etc/fsl/fsl.sh
+fi 
 
 usage()
 {
@@ -42,7 +52,7 @@ scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/scripts
 shift; shift;
 while [ $# -gt 0 ]; do
   case "$1" in
-    --reporting)  shift; QC=1; ;;
+    --reporting)  QC=1; ;;
     -d|-data-dir)  shift; datadir=$1; ;;
     -t|-threads)  shift; threads=$1; ;;
     -h|-help|--help) usage; ;;
@@ -55,6 +65,8 @@ done
 echo "Reporting for the dHCP pipeline
 Derivatives directory:  $derivatives_dir 
 Dataset CSV:            $dataset_csv
+datadir:            	$datadir
+QC (reporting): 	$QC
 
 $BASH_SOURCE $command
 ----------------------------"
@@ -116,7 +128,9 @@ while read line; do
   subj="sub-${s}_ses-$e"
   line="$s,$e,$a"
   for c in ${stats};do
-    line="$line,"`cat $workdir/$subj/$subj-$c |sed -e 's: :,:g' `
+    if [ -f $workdir/$subj/$subj-$c ]; then 
+      line="$line,"`cat $workdir/$subj/$subj-$c |sed -e 's: :,:g' `
+    fi
   done
   echo "$line" |sed -e 's: :,:g' >> $measfile
 done < $dataset_csv

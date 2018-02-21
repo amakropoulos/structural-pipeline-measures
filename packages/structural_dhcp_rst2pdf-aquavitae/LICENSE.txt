@@ -2,7 +2,7 @@ structural_dhcp_rst2pdf is adapted from the rst2pdf package version 0.93 (aquavi
 See CHANGES.txt for the modifications to the original rst2pdf package.
 
 
-• rst2pdf is covered by the following license:
+o rst2pdf is covered by the following license:
 
 --------------------------------------------------------------------------------
 Copyright (c) 2007,2008,2009 Roberto Alsina

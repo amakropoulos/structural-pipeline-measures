@@ -23,13 +23,13 @@ Then in the top directory of `structural-pipeline-measure`, use git to
 switch to the branch you want to build, and enter:
 
 ```
-# docker build --build-arg USER=<user> -t <user>/structural-pipeline-measure:latest .
+# docker build --build-arg USER=<user> -t <user>/structural-pipeline-measures:latest .
 ```
 
 Substituting `<user>` for your username. This command must be run as root. 
 
 This will create a single docker image called
-`<user>/structural-pipeline-measure:latest` containing all the required files 
+`<user>/structural-pipeline-measures:latest` containing all the required files 
 and all required dependencies. 
 
 You can then execute the tool like this (for example):
@@ -37,10 +37,9 @@ You can then execute the tool like this (for example):
 ```
 # docker run --rm -t -v $PWD/data:/data \
     -u $(id -u <user>):$(id -g <user>) \
-    <user>/structural-pipeline-measure:latest \
-    bash -c ". /etc/fsl/fsl.sh; \
-        . /usr/src/structural-pipeline/parameters/path.sh; \
-        cd /usr/src/structural-pipeline-measure; \
+    <user>/structural-pipeline-measures:latest \
+    bash -c ". /usr/src/structural-pipeline/parameters/path.sh; \
+        cd /usr/src/structural-pipeline-measures; \
         ./pipeline.sh /data/derivatives /data/dataset_csv -d /data --reporting"
 ```
 
