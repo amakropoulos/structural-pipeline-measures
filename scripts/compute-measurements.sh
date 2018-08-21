@@ -109,14 +109,13 @@ if [ ! -f $subj/$subj-curvature-regions ];then
 
   # compute the convex hull
   if [ ! -f $rdir/${subj}_outerpial.surf.vtk ];then 
+    tissues=$anatDir/${subj}_drawem_tissue_labels.nii.gz
     for h in left right;do
       if [ ! -f $rdir/${subj}_${h}_outerpial.surf.vtk ];then
-        if [ "$h" == "left" ];then
-          run fslmaths $anatDir/${subj}_ribbon.nii.gz -thr 2 -uthr 3 -bin $rdir/${subj}_${h}_outerpial.nii.gz
-        else
-          run fslmaths $anatDir/${subj}_ribbon.nii.gz -thr 41 -uthr 42 -bin $rdir/${subj}_${h}_outerpial.nii.gz
-        fi
         # compute outside surface for GI
+        run wb_command -create-signed-distance-volume $surfdir/${subj}_${h}_pial.surf.gii $tissues $rdir/${subj}_${h}_dist.nii.gz
+        run fslmaths $rdir/${subj}_${h}_dist.nii.gz -uthr 0 -abs -bin -mul $tissues -thr 2 -bin $rdir/${subj}_${h}_outerpial.nii.gz
+        # smooth surface
         run mirtk dilate-image $rdir/${subj}_${h}_outerpial.nii.gz $rdir/${subj}_${h}_outerpial.nii.gz -iterations 3
         run mirtk erode-image $rdir/${subj}_${h}_outerpial.nii.gz $rdir/${subj}_${h}_outerpial.nii.gz -iterations 2
         run mirtk extract-surface $rdir/${subj}_${h}_outerpial.nii.gz $rdir/${subj}_${h}_outerpial.surf-temp.vtk -isovalue 0.5 -blur 1 
