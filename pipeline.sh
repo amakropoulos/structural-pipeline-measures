@@ -60,6 +60,7 @@ $BASH_SOURCE $command
 ----------------------------"
 
 
+derivatives_dir=`echo "$(cd "$(dirname "$derivatives_dir")"; pwd)/$(basename "$derivatives_dir")"`
 reportsdir=$datadir/reports
 workdir=$reportsdir/workdir
 mkdir -p $workdir logs/
@@ -68,7 +69,7 @@ mkdir -p $workdir logs/
 ################ MEASURES PIPELINE ################
 
 echo "computing volume/surface measurements of subjects..."
-while read line; do
+while IFS= read -r line || [ -n "$line" ]; do
   s=`echo $line | cut -d',' -f1 | sed -e 's:sub-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   a=`echo $line | cut -d',' -f3 | sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
@@ -108,7 +109,7 @@ done
 
 # measurements
 echo "$header"> $measfile
-while read line; do
+while IFS= read -r line || [ -n "$line" ]; do
   s=`echo $line | cut -d',' -f1 | sed -e 's:sub-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   a=`echo $line | cut -d',' -f3 | sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
@@ -134,7 +135,7 @@ echo "----------------------------
 echo "computing QC measurements for subjects..."
 
 subjs=""
-while read line; do
+while IFS= read -r line || [ -n "$line" ]; do
   s=`echo $line | cut -d',' -f1 | sed -e 's:sub-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   a=`echo $line | cut -d',' -f3 | sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
@@ -158,7 +159,7 @@ for json in dhcp-measurements.json qc-measurements.json;do
       if [ $first -eq 1 ];then first=0; else line=",$line";fi
       echo $line >> $reportsdir/$json
     done
-  done < $dataset_csv
+  done
   echo "]}" >> $reportsdir/$json
 done
 
@@ -168,7 +169,7 @@ structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhc
 
 
 echo "copying reports..."
-while read line; do
+while IFS= read -r line || [ -n "$line" ]; do
   s=`echo $line | cut -d',' -f1 | sed -e 's:sub-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   cp $reportsdir/anatomical_${s}.pdf $derivatives_dir/sub-$s/ses-$e/anat/sub-${s}_ses-${e}_qc.pdf
