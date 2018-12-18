@@ -130,7 +130,7 @@ from structural_dhcp_rst2pdf.sinker import Sinker
 import tenjin
 to_str = tenjin.helpers.generate_tostrfunc('utf-8')
 escape = tenjin.helpers.escape
-templateEngine = tenjin.Engine()
+templateEngine = tenjin.Engine(cache=tenjin.MemoryCacheStorage())
 
 
 def renderTemplate(tname, **context):

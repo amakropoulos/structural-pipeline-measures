@@ -12,6 +12,46 @@ The measurements include:<br>
 ## License
 The measurements/reporting dHCP structural pipeline are distributed under the terms outlined in LICENSE.txt
 
+## Install and run with docker
+You can build the tool in a docker container. This will work on any
+version of any platform, is automated, and fairly simple. First, install
+docker:
+
+https://docs.docker.com/engine/installation/
+
+Then in the top directory of `structural-pipeline-measure`, use git to 
+switch to the branch you want to build, and enter:
+
+```
+# docker build --build-arg USER=<user> -t <user>/structural-pipeline-measures:latest .
+```
+
+Substituting `<user>` for your username. This command must be run as root. 
+
+This will create a single docker image called
+`<user>/structural-pipeline-measures:latest` containing all the required files 
+and all required dependencies. 
+
+You can then execute the tool like this (for example):
+
+```
+# docker run --rm -t -v $PWD/data:/data \
+    -u $(id -u <user>):$(id -g <user>) \
+    <user>/structural-pipeline-measures:latest \
+    bash -c ". /usr/src/structural-pipeline/parameters/path.sh; \
+        cd /usr/src/structural-pipeline-measures; \
+        ./pipeline.sh /data/derivatives /data/dataset_csv -d /data --reporting"
+```
+
+Again, this must be run as root. This will mount the subdirectory `data` of
+your current directory as `/data` in the container, then execute the tool
+on the output of `structural-pipeline` in that directory. 
+
+## Install locally
+If you want to work on the code of the pipeline, it can be more convenient to
+install locally to your machine. Only read on if you need to do a local
+install. 
+
 ## Installation
 The measurements scripts do not require installation.
 

@@ -1,4 +1,14 @@
- #!/bin/bash
+#!/bin/bash
+
+# if FSLDIR is not defined, assume we need to read the FSL startup
+if [ -z ${FSLDIR+x} ]; then
+  if [ ! -f /etc/fsl/fsl.sh ]; then
+    echo FSLDIR is not set and there is no system-wide FSL startup
+    exit 1
+  fi
+
+  . /etc/fsl/fsl.sh
+fi 
 
 usage()
 {
@@ -42,7 +52,7 @@ scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/scripts
 shift; shift;
 while [ $# -gt 0 ]; do
   case "$1" in
-    --reporting)  shift; QC=1; ;;
+    --reporting)  QC=1; ;;
     -d|-data-dir)  shift; datadir=$1; ;;
     -t|-threads)  shift; threads=$1; ;;
     -h|-help|--help) usage; ;;
@@ -55,6 +65,8 @@ done
 echo "Reporting for the dHCP pipeline
 Derivatives directory:  $derivatives_dir 
 Dataset CSV:            $dataset_csv
+datadir:            	$datadir
+QC (reporting): 	$QC
 
 $BASH_SOURCE $command
 ----------------------------"
@@ -63,7 +75,8 @@ $BASH_SOURCE $command
 derivatives_dir=`echo "$(cd "$(dirname "$derivatives_dir")"; pwd)/$(basename "$derivatives_dir")"`
 reportsdir=$datadir/reports
 workdir=$reportsdir/workdir
-mkdir -p $workdir logs/
+logdir=$datadir/logs
+mkdir -p $logdir
 
 
 ################ MEASURES PIPELINE ################
@@ -74,7 +87,7 @@ while IFS= read -r line || [ -n "$line" ]; do
   e=`echo $line | cut -d',' -f2 | sed -e 's:ses-::g' |sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   a=`echo $line | cut -d',' -f3 | sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   echo "$s $e"
-  $scriptdir/compute-measurements.sh $s $e $derivatives_dir/sub-$s/ses-$e/anat -d $workdir > logs/$s-$e-measures.log 2> logs/$s-$e-measures.err
+  $scriptdir/compute-measurements.sh $s $e $derivatives_dir/sub-$s/ses-$e/anat -d $workdir > $logdir/$s-$e-measures.log 2> $logdir/$s-$e-measures.err
 done < $dataset_csv
 echo ""
 
@@ -92,7 +105,7 @@ typeset -A name
 # header
 lbldir=$scriptdir/../label_names
 header="subject ID, session ID, age at scan"
-for c in ${stats};do
+for c in ${stats}; do
   if [[ $c == *"tissue-regions"* ]];then labels=$lbldir/tissue_labels.csv 
   elif [[ $c == *"all-regions"* ]];then labels=$lbldir/all_labels.csv
   elif [[ $c == *"regions"* ]];then labels=$lbldir/cortical_labels.csv 
@@ -116,7 +129,9 @@ while IFS= read -r line || [ -n "$line" ]; do
   subj="sub-${s}_ses-$e"
   line="$s,$e,$a"
   for c in ${stats};do
-    line="$line,"`cat $workdir/$subj/$subj-$c |sed -e 's: :,:g' `
+    if [ -f $workdir/$subj/$subj-$c ]; then 
+      line="$line,"`cat $workdir/$subj/$subj-$c |sed -e 's: :,:g' `
+    fi
   done
   echo "$line" |sed -e 's: :,:g' >> $measfile
 done < $dataset_csv
@@ -141,7 +156,7 @@ while IFS= read -r line || [ -n "$line" ]; do
   a=`echo $line | cut -d',' -f3 | sed 's/[[:blank:]]*$//' | sed 's/^[[:blank:]]*//' `
   subj="sub-${s}_ses-$e"
   echo "$s $e"
-  $scriptdir/compute-QC-measurements.sh $s $e $a $derivatives_dir/sub-$s/ses-$e/anat -d $workdir >> logs/$s-$e-measures.log 2>> logs/$s-$e-measures.err
+  $scriptdir/compute-QC-measurements.sh $s $e $a $derivatives_dir/sub-$s/ses-$e/anat -d $workdir >> $logdir/$s-$e-measures.log 2>> $logdir/$s-$e-measures.err
   subjs="$subjs $subj"
 done < $dataset_csv
 echo ""
@@ -165,7 +180,7 @@ done
 
 # create reports
 echo "creating QC reports..."
-structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhcp-measurements.json --qc-measures $reportsdir/qc-measurements.json --nthreads $threads >> logs/$s-$e-measures.log 2>> logs/$s-$e-measures.err
+structural_dhcp_mriqc -o $reportsdir -w $workdir --dhcp-measures $reportsdir/dhcp-measurements.json --qc-measures $reportsdir/qc-measurements.json --nthreads $threads >> $logdir/$s-$e-measures.log 2>> $logdir/$s-$e-measures.err
 
 
 echo "copying reports..."
